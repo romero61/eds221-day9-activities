@@ -37,12 +37,28 @@ mack_creek_lengths <- mack_creek_vertebrates %>%
   clean_names() %>% 
   select(year:sampledate) %>% 
   filter(section == "CC") %>% 
-  mutate(across(where(is.character, tolower))) %>% 
+  mutate((across(where(is.character), str_to_lower)))%>% 
   drop_na(species) %>% 
   group_by(species) %>% 
   summarize(mean_length_cm = mean(length1, na.rm = TRUE),
             sd_length_cm = sd(length1, na.rm = TRUE)) %>% 
   ungroup()
+```
+ 
+ 
+```{r}
+library(tidyverse)
+
+upper_case <- tribble(
+  ~letter, ~state,
+  'A',"CA",
+  'B',"NV",
+  'C',"NY"
+)
+
+upper_case |> 
+  mutate(across(where(is.character),str_to_lower))
+
 ```
 
 ### reprex 2
@@ -55,10 +71,29 @@ mack_creek_vertebrates %>%
   clean_names() %>% 
   filter(species == "ONCL") %>% 
   ggplot(aes(x = length1, y = weight)) +
-         geom_point(aes(shape = 12), color = "purple") +
+         geom_point(aes(shape = species), color = "purple") +
          theme_minimal() +
          labs(x = "Cutthroat trout length (cm)",
               y = "Weight (g)")
 ```
+|> 
+
+
+
+```{r}
+library(tidyverse)
+
+discrete_variable <- tribble(
+  ~continous1, ~continous2, ~discrete,
+  1,2,"CA",
+  3,4,"CA",
+  5,6,"CA"
+)
+
+discrete_variable |> 
+  ggplot(aes(x = continous1, y = continous2)) + 
+  geom_point(aes(shape = discrete))
+```
+
 
 ## End
